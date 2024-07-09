@@ -16,7 +16,7 @@ func (srv *TgService) ShowMilQ(chatId, qNum int) error {
 	fileNameMap := map[int]string{
 		1:  "./files/mil_q1.jpg",
 		2:  "./files/mil_q2.jpg",
-		3:  "./files/mil_q9.jpg",
+		3:  "./files/mil_q3.jpg",
 	}
 	replyMarkupMap := map[int]string{
 		1: `{"inline_keyboard" : [
