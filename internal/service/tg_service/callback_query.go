@@ -22,9 +22,9 @@ func (srv *TgService) HandleCallbackQuery(m models.Update) error {
 	go func() {
 		if cq.Data != "subscribe" && cq.Data != "zabrat_nagradu" && !strings.HasPrefix(cq.Data, "_win_q") && !strings.HasPrefix(cq.Data, "_lose_q") && !strings.HasPrefix(cq.Data, "show_q") {
 			srv.l.Warn("syka")
-			time.Sleep(time.Second)
+			time.Sleep(time.Second*4)
 			srv.EditMessageReplyMarkup(fromId, cq.Message.MessageId)
-			for i:=cq.Message.MessageId; i >= cq.Message.MessageId-20; i-- {
+			for i:=cq.Message.MessageId; i >= cq.Message.MessageId-25; i-- {
 				user, _ := srv.Db.GetUserById(fromId)
 				if i == user.NotDelMessId {
 					break
