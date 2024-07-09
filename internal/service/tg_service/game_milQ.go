@@ -66,19 +66,19 @@ func (srv *TgService) ShowQWin(chatId int, q_num string) error {
 
 	if q_num == "1" {
 		srv.SendMessageAndDb(chatId, textMap[q_num])
-		time.Sleep(time.Millisecond * 2000)
+		// time.Sleep(time.Millisecond * 2000)
 		srv.ShowMilQ(chatId, 2)
 		return nil
 	}
 	if q_num == "2" {
 		srv.SendMessageAndDb(chatId, textMap[q_num])
-		time.Sleep(time.Millisecond * 2000)
+		// time.Sleep(time.Millisecond * 2000)
 		srv.ShowMilQ(chatId, 3)
 		return nil
 	}
 	if q_num == "3" {
 		srv.SendMessageAndDb(chatId, textMap[q_num])
-		time.Sleep(time.Millisecond * 2000)
+		// time.Sleep(time.Millisecond * 2000)
 		// srv.Db.EditStep(chatId, "6")
 		// srv.SendAnimMessage("6", chatId, animTimeoutTest)
 		// time.Sleep(time.Second)
