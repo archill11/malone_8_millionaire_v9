@@ -430,7 +430,7 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 	// fromFirstName := cq.From.FirstName
 	srv.l.Info(fmt.Sprintf("CQ_subscribe: fromId: %d, fromUsername: %s", fromId, fromUsername))
 
-	user, _ := srv.Db.GetUserById(fromId)
+	// user, _ := srv.Db.GetUserById(fromId)
 	ChatToCheck := -1001654676322
 	// if user.Ref == "ref15" {
 	// 	ChatToCheck = -1001771020146
