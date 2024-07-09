@@ -85,8 +85,9 @@ func (srv *TgService) ShowQWin(chatId int, q_num string) error {
 
 		// user, _ := srv.Db.GetUserById(chatId)
 		chLink := "https://t.me/+1ov3rcUTXKAyYzI9"
+		chLink2 := "https://t.me/geniusgiveaway"
 
-		messText := fmt.Sprintf("Чтобы забрать свой приз , тебе необходимо выполнить 2 простых условия 😎\n\nПервое условие:\nТебе нужно подписаться на этот канал👇\n\n %s", chLink)
+		messText := fmt.Sprintf("Чтобы забрать свой приз , тебе необходимо выполнить 2 простых условия 😎\n\nПервое условие:\nТебе нужно подписаться на этот канал👇\n\n %s\n %s", chLink, chLink2)
 		reply_markup := `{"inline_keyboard" : [
 			[{ "text": "Подписался☑️", "callback_data": "subscribe" }]
 		]}`
