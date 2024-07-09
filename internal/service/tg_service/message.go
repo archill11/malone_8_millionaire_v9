@@ -113,35 +113,6 @@ func (srv *TgService) M_start(m models.Update) error {
 	]}`
 	srv.SendMessageWRM(fromId, mess, replyMarkup)
 
-	// futureJson := map[string]string{
-	// 	"video_note":   fmt.Sprintf("@%s", "./files/krug_1.mp4"),
-	// 	"chat_id": strconv.Itoa(fromId),
-	// }
-	// cf, body, err := files.CreateForm(futureJson)
-	// if err != nil {
-	// 	return fmt.Errorf("HandleVideoNote CreateFormV2 err: %v", err)
-	// }
-	// srv.SendVideoNote(body, cf)
-	// srv.SendMsgToServer(fromId, "bot", "krug_1.mp4")
-	// srv.SendAnimMessageHTML("1", fromId, animTimeout3000)
-
-	// time.Sleep(time.Millisecond * time.Duration(animTimeoutTest))
-
-	// srv.Db.EditBotState(fromId, "read_article_after_KNB_win")
-	// time.Sleep(time.Second*20)
-	// srv.SendMessageAndDb(fromId, "Введи кодовое слово ниже 👇🏻")
-
-
-
-	// text := "Прямо сейчас начинай игру и забирай бонус 1000₽ за уверенный старт! 🚀"
-	// replyMarkup := `{"inline_keyboard" : [
-	// 	[{ "text": "Начать игру", "callback_data": "start_game" }]
-	// ]}`
-	// srv.SendMessageWRM(fromId, text, replyMarkup)
-	
-	// srv.SendMsgToServer(fromId, "bot", text)
-
-	// go srv.PushKrugToUsers(m)
 
 	return nil
 }

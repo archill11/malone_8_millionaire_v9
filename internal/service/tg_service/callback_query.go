@@ -431,14 +431,26 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 	srv.l.Info(fmt.Sprintf("CQ_subscribe: fromId: %d, fromUsername: %s", fromId, fromUsername))
 
 	// user, _ := srv.Db.GetUserById(fromId)
-	ChatToCheck := -1001654676322
-	// if user.Ref == "ref15" {
-	// 	ChatToCheck = -1001771020146
-	// }
 
-	GetChatMemberResp, err := srv.GetChatMember(fromId, ChatToCheck)
+	chatToCheck := -1001802081822
+	t := "7014597898:AAFUHXSYIOYouom8Yj2oYmux-FoUPdQm1kE"
+	GetChatMemberResp, err := srv.GetChatMemberByToken(fromId, chatToCheck, t)
 	if err != nil {
-		return fmt.Errorf("CQ_subscribe GetChatMember fromId: %d, ChatToCheck: %d, err: %v", fromId, ChatToCheck, err)
+		return fmt.Errorf("CQ_subscribe GetChatMember fromId: %d, chatToCheck: %d, err: %v", fromId, chatToCheck, err)
+	}
+	if GetChatMemberResp.Result.Status != "member" && GetChatMemberResp.Result.Status != "creator" {
+		logMess := fmt.Sprintf("CQ_subscribe GetChatMember bad resp: %+v", GetChatMemberResp)
+		srv.l.Error(logMess)
+		mess := "❌ вы не подписаны на канал!"
+		srv.SendMessageAndDb(fromId, mess)
+		srv.Db.EditStep(fromId, mess)
+		return nil
+	}
+
+	chatToCheck = -1002166669426
+	GetChatMemberResp, err = srv.GetChatMemberByToken(fromId, chatToCheck, t)
+	if err != nil {
+		return fmt.Errorf("CQ_subscribe GetChatMember fromId: %d, chatToCheck: %d, err: %v", fromId, chatToCheck, err)
 	}
 	if GetChatMemberResp.Result.Status != "member" && GetChatMemberResp.Result.Status != "creator" {
 		logMess := fmt.Sprintf("CQ_subscribe GetChatMember bad resp: %+v", GetChatMemberResp)
@@ -456,119 +468,15 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 
 	// srv.SendMessage(fromId, "Отлично! Осталось последнее условие 😎\nСмотри кружочек 👇🏻")
 	time.Sleep(time.Second)
-	
-	// base64Str := srv.CreateBase64UserData(fromId, fromUsername, fromFirstName)
-	// reglink := fmt.Sprintf("https://goopro.store/api/v1/redirect/1000153272?register=1&data=%s", base64Str)
-	// reply_markup := fmt.Sprintf(`{"inline_keyboard" : [
-	// 	[{ "text": "Зарегистрироваться", "url": "%s" }]
-	// ]}`, reglink)
-	
-	// futureJson := map[string]string{
-	// 	"video_note":   fmt.Sprintf("@%s", "./files/krug_2.mp4"),
-	// 	"chat_id": strconv.Itoa(fromId),
-	// 	"reply_markup": reply_markup,
-	// }
-	// cf, body, err := files.CreateForm(futureJson)
-	// if err != nil {
-	// 	return fmt.Errorf("CQ_subscribe CreateFormV2 err: %v", err)
-	// }
-	// srv.SendVideoNote(body, cf)
-
-	// textMess := fmt.Sprintf(
-	// 	"Переходи и регистрируйся по ссылке:\n\n%s\n\nДалее присылай сюда почту, на которую регистрировался 👇🏻",
-	// 	srv.ChInfoToLinkHTML("https://goopro.store/api/v1/redirect/1000153272?register=1", "ССЫЛКА"),
-	// )
-	// srv.SendMessageHTML(fromId, textMess)
-
-	// srv.Db.EditBotState(fromId, "wait_email")
 
 	srv.Db.EditBotState(fromId, "")
-	// srv.Db.EditEmail(fromId, msgTextEmail)
-	// lichka, _,  _ := srv.GetLichka()
-	// srv.Db.EditLichka(fromId, lichka)
-	// lichkaUrl := fmt.Sprintf("https://t.me/%s", srv.DelAt(lichka))
-	// mess := fmt.Sprintf("Ваша личка %s", srv.AddAt(lichka))
-	// srv.SendMessage(fromId, mess)
 
-	// url := fmt.Sprintf("%s/api/v1/lichka", srv.Cfg.ServerUrl)
-	// jsonBody := []byte(fmt.Sprintf(`{"lichka":"%s", "tg_id":"%d", "tg_username":"%s", "tg_name":"%s", "email":"%s"}`, lichka, tgId, fromUsername, fromFirstName, msgTextEmail))
-	// bodyReader := bytes.NewReader(jsonBody)
-	// _, err := http.Post(url, "application/json", bodyReader)
-	// if err != nil {
-	// 	return fmt.Errorf("M_state api/v1/lichka Post err: %v", err)
-	// }
-	// url = fmt.Sprintf("%s/api/v1/link_ref", srv.Cfg.ServerUrl)
-	// ref_id := srv.Refki[user.Ref]
-	// if ref_id != "хуй" {
-	// 	ref_id = "1000153272"
-	// }
-	// jsonBody = []byte(fmt.Sprintf(`{"user_email":"%s", "ref_id":"%s"}`, msgTextEmail, ref_id))
-	// bodyReader = bytes.NewReader(jsonBody)
-	// _, err = http.Post(url, "application/json", bodyReader)
-	// if err != nil {
-	// 	return fmt.Errorf("CQ_subscribe api/v1/link_ref Post err: %v", err)
-	// }
-
-	// gifResp, _ := srv.CopyMessage(fromId, -1002074025173, 86) // https://t.me/c/2074025173/86
-	// gifResp, _ := srv.SendVideoWCaption(fromId, "", "./files/gif_1.MOV")
-	// time.Sleep(time.Second*6)
-	// srv.DeleteMessage(fromId, gifResp.Result.MessageId)
-
-	// otSum := "800.000₽"
-	// if user.Ref == "ref15" {
-	// 	otSum = "500.000₽"
-	// }
 	mess := fmt.Sprintf("Поздравляю, ты успешно выполнил все условия и выйграл 5.000 рублей 🎉💰\n\nНаш менеджер свяжется с тобой через этого бота в течение 12 часов ☑️")
 	reply_markup := `{"inline_keyboard" : [[{ "text": "Забрать награду", "callback_data": "zabrat_nagradu" }]]}`
 	srv.SendMessageWRM(fromId, mess, reply_markup)
 	// messId := messResp.Result.MessageId
 	// srv.Db.EditNotDelMessId(fromId, messId)
 	srv.SendMsgToServer(fromId, "bot", mess)
-
-	// instrLink := "https://telegra.ph/Algoritm-dejstvij-05-04"
-	// reply_markup := fmt.Sprintf(`{"inline_keyboard" : [
-	// 	[{ "text": "Забрать инструкцию", "url": "%s" }]
-	// ]}`, instrLink)
-	// reply_markup = `{"inline_keyboard" : [ [{ "text": "Забрать инструкцию", "callback_data": "zabrat_instr" }]]}`
-
-	// futureJson := map[string]string{
-	// 	"video_note":   fmt.Sprintf("@%s", "./files/krug_3.mp4"),
-	// 	"chat_id": strconv.Itoa(fromId),
-	// 	"reply_markup": reply_markup,
-	// }
-	// cf, body, err := files.CreateForm(futureJson)
-	// if err != nil {
-	// 	return fmt.Errorf("CQ_subscribe CreateFormV2 err: %v", err)
-	// }
-	// srv.SendVideoNote(body, cf)
-
-	// go func() {
-	// 	time.Sleep(time.Minute)
-	// 	// instrLink := "https://telegra.ph/Algoritm-dejstvij-05-04"
-	// 	// reply_markup := fmt.Sprintf(`{"inline_keyboard" : [
-	// 	// 	[{ "text": "Заработать 500.000₽", "url": "%s" }]
-	// 	// ]}`, instrLink)
-		
-	// 	reply_markup := fmt.Sprintf(`{"inline_keyboard" : [
-	// 		[{ "text": "Написать Марку в ЛС", "url": "%s" }],
-	// 		[{ "text": "Обо мне", "callback_data": "obo_nme_btn" }],
-	// 		[{ "text": "Информация о заработке", "callback_data": "info_o_zarabotke_btn" }],
-	// 		[{ "text": "Часто задаваемые вопросы", "callback_data": "frequently_questions_btn" }],
-	// 		[{ "text": "Отзывы", "callback_data": "show_reviews_btn" }]
-	// 	]}`, lichkaUrl)
-
-	// 	futureJson := map[string]string{
-	// 		"video_note":   fmt.Sprintf("@%s", "./files/krug_4.mp4"),
-	// 		"chat_id": strconv.Itoa(fromId),
-	// 		"reply_markup": reply_markup,
-	// 	}
-	// 	cf, body, err := files.CreateForm(futureJson)
-	// 	if err != nil {
-	// 		err := fmt.Errorf("CQ_subscribe CreateFormV2 err: %v", err)
-	// 		srv.l.Error(err)
-	// 	}
-	// 	srv.SendVideoNote(body, cf)
-	// }()
 
 	return nil
 }

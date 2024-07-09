@@ -121,6 +121,30 @@ func (srv *TgService) GetChatMember(user_id, chatId int) (models.GetChatMemberRe
 	return cAny, nil
 }
 
+func (srv *TgService) GetChatMemberByToken(user_id, chatId int, bot_token string) (models.GetChatMemberResp, error) {
+	json_data, err := json.Marshal(map[string]any{
+		"chat_id": strconv.Itoa(chatId),
+		"user_id": user_id,
+	})
+	if err != nil {
+		return models.GetChatMemberResp{}, fmt.Errorf("GetChat Marshal err: %v", err)
+	}
+	resp, err := http.Post(
+		fmt.Sprintf(srv.Cfg.TgEndp, bot_token, "getChatMember"),
+		"application/json",
+		bytes.NewBuffer(json_data),
+	)
+	if err != nil {
+		return models.GetChatMemberResp{}, fmt.Errorf("GetChatMember Get err: %v", err)
+	}
+	defer resp.Body.Close()
+	var cAny models.GetChatMemberResp
+	if err := json.NewDecoder(resp.Body).Decode(&cAny); err != nil {
+		return models.GetChatMemberResp{}, fmt.Errorf("GetChatMember Decode err: %v", err)
+	}
+	return cAny, nil
+}
+
 func (srv *TgService) SendForceReply(chat int, mess string) error {
 	json_data, err := json.Marshal(map[string]any{
 		"chat_id":      strconv.Itoa(chat),
