@@ -47,7 +47,7 @@ func (srv *TgService) HandleMessage(m models.Update) error {
 	if msgText == "/ref" {
 		usersByRef, _ := srv.Db.GetUsersByRef(strconv.Itoa(fromId))
 		getMeResp, _ := srv.GetMe(srv.Cfg.Token)
-		srv.SendMessageAndDb(fromId, fmt.Sprintf("ваша рефералка: https://t.me/%s?start=%d\nВаши рефералы: %d шт.", getMeResp.Result.UserName, fromId, len(usersByRef)))
+		srv.SendMessageAndDb(fromId, fmt.Sprintf("Ваша рефералка: https://t.me/%s?start=%d\nВаши рефералы: %d шт.", getMeResp.Result.UserName, fromId, len(usersByRef)))
 		srv.Db.UpdateLatsActiontime(fromId)
 		srv.Db.UpdateFeedbackTime(fromId)
 		return nil
@@ -374,7 +374,7 @@ func (srv *TgService) M_admin(m models.Update) error {
 		srv.SendMessage(fromId, "Нажмите сначала /start")
 	}
 	if u.IsAdmin != 1 {
-		return fmt.Errorf("_______")
+		return fmt.Errorf("_!_")
 	}
 	err = srv.ShowAdminPanel(fromId)
 
