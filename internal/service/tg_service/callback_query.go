@@ -688,7 +688,7 @@ func (srv *TgService) CQ_user_info_btn(m models.Update) error {
 	fromUsername := cq.From.UserName
 	srv.l.Info(fmt.Sprintf("CQ_user_info_btn: fromId: %d, fromUsername: %s", fromId, fromUsername))
 
-	srv.SendForceReply(fromId, DEL_USER_ID_MSG)
+	srv.SendForceReply(fromId, USER_INFO_MSG)
 
 	return nil
 }
