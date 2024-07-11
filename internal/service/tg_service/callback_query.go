@@ -20,7 +20,7 @@ func (srv *TgService) HandleCallbackQuery(m models.Update) error {
 	srv.SendMsgToServer(fromId, "user", fmt.Sprintf("кнопка: %s", cq.Data))
 
 	go func() {
-		if cq.Data != "subscribe" && cq.Data != "zabrat_nagradu" && !strings.HasPrefix(cq.Data, "_win_q") && !strings.HasPrefix(cq.Data, "_lose_q") && !strings.HasPrefix(cq.Data, "show_q") {
+		if cq.Data != "subscribe" && cq.Data != "zabrat_nagradu" && !strings.HasPrefix(cq.Data, "_win_q") && !strings.HasPrefix(cq.Data, "_lose_q") && !strings.HasPrefix(cq.Data, "show_q") && !strings.HasPrefix(cq.Data, "user_info") {
 			srv.l.Warn("syka")
 			time.Sleep(time.Second*4)
 			srv.EditMessageReplyMarkup(fromId, cq.Message.MessageId)
