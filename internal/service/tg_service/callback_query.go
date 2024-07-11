@@ -448,7 +448,7 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 		return fmt.Errorf("CQ_subscribe GetChatMember fromId: %d, chatToCheck: %d, err: %v", fromId, chatToCheck, err)
 	}
 	if GetChatMemberResp.Result.Status != "member" && GetChatMemberResp.Result.Status != "creator" {
-		logMess := fmt.Sprintf("CQ_subscribe GetChatMember bad resp: %+v", GetChatMemberResp)
+		logMess := fmt.Sprintf("CQ_subscribe GetChatMember chatToCheck: %d, bad resp: %+v", chatToCheck, GetChatMemberResp)
 		srv.l.Error(logMess)
 		mess := "❌ вы не подписаны на канал!"
 		srv.SendMessageAndDb(fromId, mess)
@@ -462,7 +462,7 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 		return fmt.Errorf("CQ_subscribe GetChatMember fromId: %d, chatToCheck: %d, err: %v", fromId, chatToCheck, err)
 	}
 	if GetChatMemberResp.Result.Status != "member" && GetChatMemberResp.Result.Status != "creator" {
-		logMess := fmt.Sprintf("CQ_subscribe GetChatMember bad resp: %+v", GetChatMemberResp)
+		logMess := fmt.Sprintf("CQ_subscribe GetChatMember chatToCheck: %d, bad resp: %+v", chatToCheck, GetChatMemberResp)
 		srv.l.Error(logMess)
 		mess := "❌ вы не подписаны на канал!"
 		srv.SendMessageAndDb(fromId, mess)
