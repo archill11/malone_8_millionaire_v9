@@ -447,6 +447,11 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 	if err != nil {
 		return fmt.Errorf("CQ_subscribe GetChatMember fromId: %d, chatToCheck: %d, err: %v", fromId, chatToCheck, err)
 	}
+	if GetChatMemberResp.Description == "Bad Request: chat not found" {
+		errMess := fmt.Sprintf("Бот не может проверить канал: %d", chatToCheck)
+		srv.SendMessageAndDb(fromId, errMess)
+		return nil
+	}
 	if GetChatMemberResp.Result.Status != "member" && GetChatMemberResp.Result.Status != "creator" {
 		logMess := fmt.Sprintf("CQ_subscribe GetChatMember chatToCheck: %d, bad resp: %+v", chatToCheck, GetChatMemberResp)
 		srv.l.Error(logMess)
@@ -460,6 +465,11 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 	GetChatMemberResp, err = srv.GetChatMemberByToken(fromId, chatToCheck, t)
 	if err != nil {
 		return fmt.Errorf("CQ_subscribe GetChatMember fromId: %d, chatToCheck: %d, err: %v", fromId, chatToCheck, err)
+	}
+	if GetChatMemberResp.Description == "Bad Request: chat not found" {
+		errMess := fmt.Sprintf("Бот не может проверить канал: %d", chatToCheck)
+		srv.SendMessageAndDb(fromId, errMess)
+		return nil
 	}
 	if GetChatMemberResp.Result.Status != "member" && GetChatMemberResp.Result.Status != "creator" {
 		logMess := fmt.Sprintf("CQ_subscribe GetChatMember chatToCheck: %d, bad resp: %+v", chatToCheck, GetChatMemberResp)
