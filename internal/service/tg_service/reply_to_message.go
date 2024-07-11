@@ -139,12 +139,12 @@ func (srv *TgService) RM__USER_INFO_MSG(m models.Update) error {
 	if userId != 0 {
 		user, _ = srv.Db.GetUserById(userId)
 	} else {
-		user, _ = srv.Db.GetUserByUsername(userUsername)
+		user, _ = srv.Db.GetUserByUsername(srv.DelAt(userUsername))
 	}
 	usersByRef, _ := srv.Db.GetUsersByRef(strconv.Itoa(user.Id))
 
 	var mess bytes.Buffer
-	mess.WriteString(fmt.Sprintf("Юзер: %d | %s", user.Id, srv.AddAt(user.Username)))
+	mess.WriteString(fmt.Sprintf("Юзер: %d | %s\n", user.Id, srv.AddAt(user.Username)))
 	mess.WriteString(fmt.Sprintf("Рефералы: %d шт.", len(usersByRef)))
 
 	srv.SendMessage(fromId, mess.String())
