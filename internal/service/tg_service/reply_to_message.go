@@ -137,13 +137,10 @@ func (srv *TgService) RM__USER_INFO_MSG(m models.Update) error {
 
 	var user entity.User
 	if userId != 0 {
-		srv.l.Info("if userId != 0")
 		user, _ = srv.Db.GetUserById(userId)
 	} else {
-		srv.l.Info("else")
 		user, _ = srv.Db.GetUserByUsername(srv.DelAt(userUsername))
 	}
-	srv.l.Info("user", user)
 	usersByRef, _ := srv.Db.GetUsersByRef(strconv.Itoa(user.Id))
 
 	var mess bytes.Buffer
