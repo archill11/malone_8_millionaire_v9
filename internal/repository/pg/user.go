@@ -107,7 +107,7 @@ func (s *Database) GetUsersByRef(ref string) ([]entity.User, error) {
 func (s *Database) GetUserByUsername(username string) (entity.User, error) {
 	q := `
 		SELECT coalesce((
-			SELECT json_agg(c)
+			SELECT to_json(c)
 	  		FROM users as c
 	  		WHERE username = $1
 		), '{}'::json)
