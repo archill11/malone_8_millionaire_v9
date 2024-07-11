@@ -1,7 +1,9 @@
 package tg_service
 
 import (
+	"bytes"
 	"fmt"
+	"myapp/internal/entity"
 	"myapp/internal/models"
 	my_regex "myapp/pkg/regex"
 	"strconv"
@@ -45,6 +47,15 @@ func (srv *TgService) HandleReplyToMessage(m models.Update) error {
 
 	if rm.Text == DEL_USER_ID_MSG {
 		err := srv.RM__DEL_USER_ID_MSG(m)
+		if err != nil {
+			srv.SendMessage(fromId, ERR_MSG)
+			srv.SendMessage(fromId, err.Error())
+		}
+		return err
+	}
+
+	if rm.Text == USER_INFO_MSG {
+		err := srv.RM__USER_INFO_MSG(m)
 		if err != nil {
 			srv.SendMessage(fromId, ERR_MSG)
 			srv.SendMessage(fromId, err.Error())
@@ -112,5 +123,30 @@ func (srv *TgService) RM__DEL_USER_ID_MSG(m models.Update) error {
 	srv.Db.DeleteUserById(id)
 
 	srv.SendMessage(fromId, "юзер удален")
+	return nil
+}
+
+func (srv *TgService) RM__USER_INFO_MSG(m models.Update) error {
+	replyMes := m.Message.Text
+	fromId := m.Message.From.Id
+	fromUsername := m.Message.From.UserName
+	srv.l.Info(fmt.Sprintf("RM__USER_INFO_MSG: fromId: %d, fromUsername: %s, replyMes: %s", fromId, fromUsername, replyMes))
+
+	userUsername := replyMes
+	userId, _ := strconv.Atoi(replyMes)
+
+	var user entity.User
+	if userId != 0 {
+		user, _ = srv.Db.GetUserById(userId)
+	} else {
+		user, _ = srv.Db.GetUserByUsername(userUsername)
+	}
+	usersByRef, _ := srv.Db.GetUsersByRef(strconv.Itoa(user.Id))
+
+	var mess bytes.Buffer
+	mess.WriteString(fmt.Sprintf("Юзер: %d | %s", user.Id, srv.AddAt(user.Username)))
+	mess.WriteString(fmt.Sprintf("Рефералы: %d шт.", len(usersByRef)))
+
+	srv.SendMessage(fromId, mess.String())
 	return nil
 }

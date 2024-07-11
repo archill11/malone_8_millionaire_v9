@@ -11,9 +11,7 @@ func (srv *TgService) ShowAdminPanel(chatId int) error {
 		"chat_id": strconv.Itoa(chatId),
 		"text":    "Админ панель",
 		"reply_markup": `{"inline_keyboard" : [
-			[{ "text": "Рассылка по шагу [copy]", "callback_data": "mailing_copy_btn" }],
-			[{ "text": "Удалить юзера по username", "callback_data": "delete_user_by_username_btn" }],
-			[{ "text": "Удалить юзера по id", "callback_data": "delete_user_by_id_btn" }]
+			[{ "text": "Инфа по Юзеру", "callback_data": "user_info_btn" }]
 		]}`,
 	})
 	if err != nil {

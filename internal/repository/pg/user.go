@@ -84,6 +84,46 @@ func (s *Database) GetUsersByStep(step string) ([]entity.User, error) {
 	return u, nil
 }
 
+func (s *Database) GetUsersByRef(ref string) ([]entity.User, error) {
+	q := `
+		SELECT coalesce((
+			SELECT json_agg(c)
+	  		FROM users as c
+	  		WHERE ref = $1
+		), '[]'::json)
+	`
+	u := make([]entity.User, 0)
+	var data []byte
+	err := s.QueryRow(q, ref).Scan(&data)
+	if err != nil {
+		return u, fmt.Errorf("GetUsersByRef Scan: %v", err)
+	}
+	if err := json.Unmarshal(data, &u); err != nil {
+		return u, fmt.Errorf("GetUsersByRef Unmarshal: %v", err)
+	}
+	return u, nil
+}
+
+func (s *Database) GetUserByUsername(username string) (entity.User, error) {
+	q := `
+		SELECT coalesce((
+			SELECT json_agg(c)
+	  		FROM users as c
+	  		WHERE username = $1
+		), '{}'::json)
+	`
+	u := entity.User{}
+	var data []byte
+	err := s.QueryRow(q, username).Scan(&data)
+	if err != nil {
+		return u, fmt.Errorf("GetUsersByUsername Scan: %v", err)
+	}
+	if err := json.Unmarshal(data, &u); err != nil {
+		return u, fmt.Errorf("GetUsersByUsername Unmarshal: %v", err)
+	}
+	return u, nil
+}
+
 func (s *Database) GetAllUsers() ([]entity.User, error) {
 	q := `
 		SELECT coalesce((

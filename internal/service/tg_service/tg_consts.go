@@ -20,5 +20,9 @@ const (
 )
 
 const (
+	USER_INFO_MSG = "[U_INFO_MSG] Укажите username или id"
+)
+
+const (
 	MAILING_COPY_STEP = "[MAILING_COPY_STEP] Укажите шаг"
 )

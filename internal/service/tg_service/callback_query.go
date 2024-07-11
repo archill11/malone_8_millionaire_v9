@@ -53,6 +53,15 @@ func (srv *TgService) HandleCallbackQuery(m models.Update) error {
 		return err
 	}
 
+	if cq.Data == "user_info_btn" {
+		err := srv.CQ_user_info_btn(m)
+		if err != nil {
+			srv.SendMessage(fromId, ERR_MSG)
+			srv.SendMessage(fromId, err.Error())
+		}
+		return err
+	}
+
 	if cq.Data == "delete_user_by_id_btn" {
 		err := srv.CQ_delete_user_by_id_btn(m)
 		if err != nil {
@@ -669,6 +678,17 @@ func (srv *TgService) CQ_pognaly_btn(m models.Update) error {
 	srv.l.Info(fmt.Sprintf("CQ_davay_sigraem_btn: fromId: %d, fromUsername: %s", fromId, fromUsername))
 
 	srv.ShowMilQ(fromId, 1)
+
+	return nil
+}
+
+func (srv *TgService) CQ_user_info_btn(m models.Update) error {
+	cq := m.CallbackQuery
+	fromId := cq.From.Id
+	fromUsername := cq.From.UserName
+	srv.l.Info(fmt.Sprintf("CQ_user_info_btn: fromId: %d, fromUsername: %s", fromId, fromUsername))
+
+	srv.SendForceReply(fromId, DEL_USER_ID_MSG)
 
 	return nil
 }

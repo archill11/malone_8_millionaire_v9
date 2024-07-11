@@ -44,6 +44,15 @@ func (srv *TgService) HandleMessage(m models.Update) error {
 		return nil
 	}
 
+	if msgText == "/ref" {
+		usersByRef, _ := srv.Db.GetUsersByRef(strconv.Itoa(fromId))
+		getMeResp, _ := srv.GetMe(srv.Cfg.Token)
+		srv.SendMessageAndDb(fromId, fmt.Sprintf("ваша рефералка: https://t.me/%s?start=%d\nВаши рефералы: %d шт.", getMeResp.Result.UserName, fromId, len(usersByRef)))
+		srv.Db.UpdateLatsActiontime(fromId)
+		srv.Db.UpdateFeedbackTime(fromId)
+		return nil
+	}
+
 	// if user.IsLastPush == 1 {
 	// 	srv.SendMessageAndDb(fromId, "бот вам больше не доступен")
 	// 	return nil
@@ -96,11 +105,11 @@ func (srv *TgService) M_start(m models.Update) error {
 		return fmt.Errorf("M_start AddNewUser err: %v", err)
 	}
 	srv.Db.EditRef(fromId, ref)
-	lichka := "odincovmarkk"
-	if ref == "ref15" {
-		lichka = "markodinncov"
-	}
-	srv.Db.EditLichka(fromId, lichka)
+	// lichka := "odincovmarkk"
+	// if ref == "ref15" {
+	// 	lichka = "markodinncov"
+	// }
+	// srv.Db.EditLichka(fromId, lichka)
 	if fromId == 1394096901 {
 		srv.Db.EditAdmin(fromId, 1)
 	}
