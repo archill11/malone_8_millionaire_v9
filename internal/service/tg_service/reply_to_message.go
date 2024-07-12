@@ -143,9 +143,23 @@ func (srv *TgService) RM__USER_INFO_MSG(m models.Update) error {
 	}
 	usersByRef, _ := srv.Db.GetUsersByRef(strconv.Itoa(user.Id))
 
+	isSubscrube := true
+	chatToCheck := -1001802081822
+	t := "7014597898:AAFUHXSYIOYouom8Yj2oYmux-FoUPdQm1kE"
+	GetChatMemberResp, _ := srv.GetChatMemberByToken(fromId, chatToCheck, t)
+	if GetChatMemberResp.Result.Status != "member" && GetChatMemberResp.Result.Status != "creator" {
+		isSubscrube = false
+	}
+	chatToCheck = -1002166669426
+	GetChatMemberResp, _ = srv.GetChatMemberByToken(fromId, chatToCheck, t)
+	if GetChatMemberResp.Result.Status != "member" && GetChatMemberResp.Result.Status != "creator" {
+		isSubscrube = false
+	}
+
 	var mess bytes.Buffer
 	mess.WriteString(fmt.Sprintf("Юзер: %d | %s\n", user.Id, srv.AddAt(user.Username)))
-	mess.WriteString(fmt.Sprintf("Рефералы: %d шт.", len(usersByRef)))
+	mess.WriteString(fmt.Sprintf("Рефералы: %d шт.\n", len(usersByRef)))
+	mess.WriteString(fmt.Sprintf("Юзер подписан на 2 канала: %v\n", isSubscrube))
 
 	srv.SendMessage(fromId, mess.String())
 	return nil
