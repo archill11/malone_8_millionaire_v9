@@ -585,7 +585,7 @@ func (srv *TgService) SendDocumentWCaption(chat_id int, caption, fileNameInServe
 		"chat_id":    strconv.Itoa(chat_id),
 		"caption":    caption,
 		"parse_mode": "HTML",
-		"photo":      fmt.Sprintf("@%s", fileNameInServer),
+		"document":      fmt.Sprintf("@%s", fileNameInServer),
 	}
 	contentType, body, err := files.CreateForm(futureJson)
 	if err != nil {
@@ -602,7 +602,7 @@ func (srv *TgService) SendDocumentWCaptionWRM(chat_id int, caption, fileNameInSe
 		"chat_id":    strconv.Itoa(chat_id),
 		"caption":    caption,
 		"parse_mode": "HTML",
-		"photo":      fmt.Sprintf("@%s", fileNameInServer),
+		"document":      fmt.Sprintf("@%s", fileNameInServer),
 		"reply_markup": reply_markup,
 	}
 	contentType, body, err := files.CreateForm(futureJson)
