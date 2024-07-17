@@ -403,9 +403,9 @@ func (srv *TgService) GetUserPersonalRef(fromId int) string {
 }
 
 type CheckInstStoryResp struct {
-	Marked bool `json:"marked"`
+	Marked  bool   `json:"marked"`
 	StoryId string `json:"story_id"`
-	Detail string `json:"detail"`
+	Detail  string `json:"detail"`
 }
 
 func (srv *TgService) CheckInstStory(username, mention_username string) (CheckInstStoryResp, error) {
