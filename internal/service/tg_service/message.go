@@ -115,6 +115,9 @@ func (srv *TgService) M_start(m models.Update) error {
 	fromUsername := m.Message.From.UserName
 	srv.l.Info(fmt.Sprintf("M_start: fromId: %d, fromUsername: %s, msgText: %s", fromId, fromUsername, msgText))
 
+	messId :=  m.Message.MessageId
+	srv.Db.EditNotDelMessId(fromId, messId)
+
 	refArr := strings.Split(msgText, " ")
 	ref := ""
 	if len(refArr) > 1 {
