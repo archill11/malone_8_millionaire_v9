@@ -509,6 +509,14 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 	time.Sleep(time.Second)
 
 	srv.Db.EditBotState(fromId, "")
+
+	text := "‎"
+	reply_markup := `{
+		"keyboard" : [[{ "text": "Условия розыгрыша", "resize": true }, { "text": "Мои рефералы", "resize": true }]],
+		"resize_keyboard": true
+	}`
+	srv.SendMessageWRM(fromId, text, reply_markup)
+
 	userPersonalRef := srv.GetUserPersonalRef(fromId)
 	// mess := fmt.Sprintf("Поздравляю, ты успешно выполнил все условия и выйграл 5.000 рублей 🎉💰\n\nНаш менеджер свяжется с тобой через этого бота в течение 12 часов ☑️")
 	mess := fmt.Sprintf(
@@ -517,25 +525,27 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 		userPersonalRef,
 	)
 	// reply_markup := `{"inline_keyboard" : [[{ "text": "Забрать награду", "callback_data": "zabrat_nagradu" }]]}`
-	reply_markup := `{
-		"keyboard" : [[{ "text": "Условия розыгрыша", "resize": true }, { "text": "Мои рефералы", "resize": true }]],
-		"resize_keyboard": true,
-		"inline_keyboard" : [[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]]
-	}`
+	// reply_markup := `{
+	// 	"keyboard" : [[{ "text": "Условия розыгрыша", "resize": true }, { "text": "Мои рефералы", "resize": true }]],
+	// 	"resize_keyboard": true
+	// }`
+	reply_markup = `{"inline_keyboard" : [
+		[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]
+	]}`
 	srv.SendMessageWRM(fromId, mess, reply_markup)
 	// messId := messResp.Result.MessageId
 	// srv.Db.EditNotDelMessId(fromId, messId)
 	srv.SendMsgToServer(fromId, "bot", mess)
 
-	text := "фото"
-	replyMarkup := `{"inline_keyboard" : [
-		[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]
-	]}`
-	fileNameInServer := "./files/inst_story_draft.jpeg"
-	_, err = srv.SendPhotoWCaptionWRM(fromId, text, fileNameInServer, replyMarkup)
-	if err != nil {
-		return fmt.Errorf("CQ_subscribe SendPhotoWCaptionWRM err: %v", err)
-	}
+	// text := "фото"
+	// replyMarkup := `{"inline_keyboard" : [
+	// 	[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]
+	// ]}`
+	// fileNameInServer := "./files/inst_story_draft.jpeg"
+	// _, err = srv.SendPhotoWCaptionWRM(fromId, text, fileNameInServer, replyMarkup)
+	// if err != nil {
+	// 	return fmt.Errorf("CQ_subscribe SendPhotoWCaptionWRM err: %v", err)
+	// }
 
 	return nil
 }
