@@ -404,12 +404,14 @@ func (srv *TgService) GetUserPersonalRef(fromId int) string {
 
 type CheckInstStoryResp struct {
 	Marked bool `json:"marked"`
+	StoryId string `json:"story_id"`
+	Detail string `json:"detail"`
 }
 
-func (srv *TgService) CheckInstStory(user_id, chatId int, bot_token string) (CheckInstStoryResp, error) {
+func (srv *TgService) CheckInstStory(username, mention_username string) (CheckInstStoryResp, error) {
 	json_data, err := json.Marshal(map[string]any{
-		"username": strconv.Itoa(chatId),
-		"mention_username": user_id,
+		"username": username,
+		"mention_username": mention_username,
 	})
 	if err != nil {
 		return CheckInstStoryResp{}, fmt.Errorf("GetChat Marshal err: %v", err)

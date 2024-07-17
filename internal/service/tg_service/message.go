@@ -285,7 +285,7 @@ func (srv *TgService) M_state(m models.Update) error {
 			}
 			cf, body, err := files.CreateForm(futureJson)
 			if err != nil {
-				return fmt.Errorf("HandleVideoNote CreateFormV2 err: %v", err)
+				return fmt.Errorf("M_state CreateFormV2 err: %v", err)
 			}
 			srv.SendVideoNote(body, cf)
 
@@ -304,7 +304,7 @@ func (srv *TgService) M_state(m models.Update) error {
 				}
 				cf, body, err = files.CreateForm(futureJson)
 				if err != nil {
-					err := fmt.Errorf("HandleVideoNote CreateFormV2 err: %v", err)
+					err := fmt.Errorf("M_state CreateFormV2 err: %v", err)
 					srv.l.Error(err)
 				}
 				srv.SendVideoNote(body, cf)
@@ -371,6 +371,38 @@ func (srv *TgService) M_state(m models.Update) error {
 		srv.Db.EditIsFinal(fromId, 1)
 
 		return nil
+	}
+
+	if user.BotState == "wait_inst_link" {
+
+		username := msgText
+		mention_usernamme := "mrgeniuz1"
+
+		checkInstStoryResp, err := srv.CheckInstStory(username, mention_usernamme)
+		if err != nil {
+			err := fmt.Errorf("M_state CheckInstStory err: %v", err)
+			return err
+		}
+		srv.l.Info(fmt.Sprintf("M_state checkInstStoryResp: %+v", checkInstStoryResp))
+		if checkInstStoryResp.Marked {
+			mess := fmt.Sprintf("🎉 Поздравляю, ты участвуешь в розыгрыше 5 000 ₽! Переходи в канал раздачи, там объявим победителей в прямом эфире. Обязательно приходи👇")
+			replyMarkup := `{"inline_keyboard" : [
+				[{ "text": "Узнать итоги", "url": "https://t.me/geniusgiveaway" }]
+			]}`
+			_, err := srv.SendMessageWRM(fromId, mess, replyMarkup)
+			if err != nil {
+				return fmt.Errorf("M_state SendMessageWRM err: %v", err)
+			}
+			srv.SendMsgToServer(fromId, "bot", mess)
+	
+			return nil
+		} else {
+			mess := "🤔Что-то не так. Обычно такое случается, если ссылка на историю неверная или не было отметки. Попробуй ещё раз."
+			srv.SendMessageAndDb(fromId, mess)
+	
+			return nil
+		}
+
 	}
 
 	return nil

@@ -528,8 +528,8 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 
 	text := "фото"
 	replyMarkup := `{"inline_keyboard" : [
-			[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]
-		]}`
+		[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]
+	]}`
 	fileNameInServer := "./files/inst_story_draft.jpeg"
 	_, err = srv.SendPhotoWCaptionWRM(fromId, text, fileNameInServer, replyMarkup)
 	if err != nil {
@@ -752,7 +752,7 @@ func (srv *TgService) CQ_otmetil_btn(m models.Update) error {
 
 	srv.SendMessageAndDb(fromId, mess)
 
-	// todo set state
+	srv.Db.EditBotState(fromId, "wait_inst_link")
 
 	return nil
 }
@@ -764,11 +764,26 @@ func (srv *TgService) CQ_priglasil_btn(m models.Update) error {
 	fromUsername := cq.From.UserName
 	srv.l.Info(fmt.Sprintf("CQ_priglasil_btn: fromId: %d, fromUsername: %s", fromId, fromUsername))
 
-	mess := fmt.Sprintf("Отправь ссылку на историю или @юзернейм инстаграма, с которого выложил историю👇")
+	usersByRef, _ := srv.Db.GetUsersByRef(strconv.Itoa(fromId))
 
-	srv.SendMessageAndDb(fromId, mess)
+	if len(usersByRef) < 2 {
+		mess := "🤔Что-то не так. Я не вижу твоих рефералов. Возможно, ты пригласил их, но не по своей уникальной ссылке. Попробуй ещё раз."
+		srv.SendMessageAndDb(fromId, mess)
 
-	// todo set state
+		return nil
+	} else {
+		mess := fmt.Sprintf("🎉 Поздравляю, ты участвуешь в розыгрыше 5 000 ₽! Переходи в канал раздачи, там объявим победителей в прямом эфире. Обязательно приходи👇")
+		replyMarkup := `{"inline_keyboard" : [
+			[{ "text": "Узнать итоги", "url": "https://t.me/geniusgiveaway" }]
+		]}`
+		_, err := srv.SendMessageWRM(fromId, mess, replyMarkup)
+		if err != nil {
+			return fmt.Errorf("CQ_priglasil_btn SendMessageWRM err: %v", err)
+		}
+		srv.SendMsgToServer(fromId, "bot", mess)
+
+		return nil
+	}
 
 	return nil
 }
