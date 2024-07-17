@@ -510,12 +510,12 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 
 	srv.Db.EditBotState(fromId, "")
 
-	text := '‎'
+	text := "."
 	reply_markup := `{
 		"keyboard" : [[{ "text": "Условия розыгрыша", "resize": true }, { "text": "Мои рефералы", "resize": true }]],
 		"resize_keyboard": true
 	}`
-	_, err = srv.SendMessageWRM(fromId, string(text), reply_markup)
+	_, err = srv.SendMessageWRM(fromId, text, reply_markup)
 	if err != nil {
 		return fmt.Errorf("CQ_subscribe SendMessageWRM err: %v", err)
 	}
