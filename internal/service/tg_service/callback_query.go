@@ -510,7 +510,7 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 
 	srv.Db.EditBotState(fromId, "")
 
-	text := "."
+	text := "Так держать! Выполнив следующее условие, ты обходишь 97%% участников.\n\n"
 	reply_markup := `{
 		"keyboard" : [[{ "text": "Условия розыгрыша", "resize": true }, { "text": "Мои рефералы", "resize": true }]],
 		"resize_keyboard": true
