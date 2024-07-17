@@ -519,7 +519,8 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 	// reply_markup := `{"inline_keyboard" : [[{ "text": "Забрать награду", "callback_data": "zabrat_nagradu" }]]}`
 	reply_markup := `{
 		"keyboard" : [[{ "text": "Условия розыгрыша", "resize": true }, { "text": "Мои рефералы", "resize": true }]],
-		"resize_keyboard": true
+		"resize_keyboard": true,
+		"inline_keyboard" : [[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]]
 	}`
 	srv.SendMessageWRM(fromId, mess, reply_markup)
 	// messId := messResp.Result.MessageId
@@ -712,7 +713,7 @@ func (srv *TgService) CQ_davay_sigraem_btn(m models.Update) error {
 	fromUsername := cq.From.UserName
 	srv.l.Info(fmt.Sprintf("CQ_davay_sigraem_btn: fromId: %d, fromUsername: %s", fromId, fromUsername))
 
-	mess := "В кратце расскажу тебе правила:\n\nДля победы тебе нужно дать правильные ответы на 3 вопроса!\nУ тебя имеется 3 попытки, но постарайся пройти с первой 😎\n\nЖелаю удачи! ✊\nЖми кнопку 👇"
+	mess := "Вкратце расскажу тебе правила:\n\nДля победы тебе нужно дать правильные ответы на 3 вопроса!\nУ тебя имеется 3 попытки, но постарайся пройти с первой 😎\n\nЖелаю удачи! ✊\nЖми кнопку 👇"
 	replyMarkup :=`{"inline_keyboard" : [
 		[ { "text": "Погнали!", "callback_data": "pognaly_btn" } ]
 	]}`
