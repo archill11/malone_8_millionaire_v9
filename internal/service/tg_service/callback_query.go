@@ -515,7 +515,10 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 		"keyboard" : [[{ "text": "Условия розыгрыша", "resize": true }, { "text": "Мои рефералы", "resize": true }]],
 		"resize_keyboard": true
 	}`
-	srv.SendMessageWRM(fromId, string(text), reply_markup)
+	_, err = srv.SendMessageWRM(fromId, string(text), reply_markup)
+	if err != nil {
+		return fmt.Errorf("CQ_subscribe SendMessageWRM err: %v", err)
+	}
 
 	userPersonalRef := srv.GetUserPersonalRef(fromId)
 	// mess := fmt.Sprintf("Поздравляю, ты успешно выполнил все условия и выйграл 5.000 рублей 🎉💰\n\nНаш менеджер свяжется с тобой через этого бота в течение 12 часов ☑️")
@@ -533,7 +536,7 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 		[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]
 	]}`
 	fileNameInServer := "./files/inst_story_draft.jpeg"
-	_, err =srv.SendDocumentWCaptionWRM(fromId, mess, fileNameInServer, reply_markup)
+	_, err = srv.SendDocumentWCaptionWRM(fromId, mess, fileNameInServer, reply_markup)
 	if err != nil {
 		return fmt.Errorf("CQ_subscribe SendDocumentWCaptionWRM err: %v", err)
 	}
