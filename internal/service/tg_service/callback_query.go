@@ -536,12 +536,12 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 		[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]
 	]}`
 	fileNameInServer := "./files/inst_story_draft.jpeg"
-	_, err = srv.SendDocumentWCaptionWRM(fromId, mess, fileNameInServer, reply_markup)
+	messResp, err := srv.SendDocumentWCaptionWRM(fromId, mess, fileNameInServer, reply_markup)
 	if err != nil {
 		return fmt.Errorf("CQ_subscribe SendDocumentWCaptionWRM err: %v", err)
 	}
-	// messId := messResp.Result.MessageId
-	// srv.Db.EditNotDelMessId(fromId, messId)
+	messId := messResp.Result.MessageId
+	srv.Db.EditNotDelMessId(fromId, messId)
 	srv.SendMsgToServer(fromId, "bot", mess)
 
 	// text := "фото"
