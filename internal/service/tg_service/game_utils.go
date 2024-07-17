@@ -65,7 +65,7 @@ func (srv *TgService) Send3Kruga(fromId int) {
 }
 
 func (srv *TgService) SendMessageAndDb(chat_id int, text string) (models.SendMessageResp, error) {
-	resp, err := srv.SendMessage(chat_id, text)
+	resp, err := srv.SendMessageHTML(chat_id, text)
 	if err != nil {
 		return models.SendMessageResp{}, fmt.Errorf("SendMessageAndDb SendMessage err: %v", err)
 	}
