@@ -44,10 +44,26 @@ func (srv *TgService) HandleMessage(m models.Update) error {
 		return nil
 	}
 
-	if msgText == "/ref" {
+	if msgText == "Условия розыгрыша" {
+		userPersonalRef := srv.GetUserPersonalRef(fromId)
+		chLink := "https://t.me/+rLIklQb0ALNhZjEx"
+		chLink2 := "https://t.me/geniusgiveaway"
+		messText := fmt.Sprintf("Условие первое:\nПодпишись на эти каналы 👇\n\n %s\n %s", chLink, chLink2)
+		mess := fmt.Sprintf("Условие второе:\nВыложи себе в инстаграм stories нашу картинку и в соответствующем поле отметь инстаграм-аккаунт раздачи: %s %s.\n\nИли:\nПригласи двух друзей по своей уникальной ссылке: %s. Отправь ссылку друзьям.", "@mrgeniuz1", srv.ChInfoToLinkHTML("https://www.instagram.com/mrgeniuz1", "(прямая ссылка на профиль)"), userPersonalRef)
+		
+		fullMess := fmt.Sprintf("%s\n\n%s", messText, mess)
+
+		srv.SendMessageAndDb(fromId, fullMess)
+
+		srv.Db.UpdateLatsActiontime(fromId)
+		srv.Db.UpdateFeedbackTime(fromId)
+		return nil
+	}
+
+	if msgText == "/ref" || msgText == "Мои рефералы" {
 		usersByRef, _ := srv.Db.GetUsersByRef(strconv.Itoa(fromId))
-		getMeResp, _ := srv.GetMe(srv.Cfg.Token)
-		srv.SendMessageAndDb(fromId, fmt.Sprintf("Ваша рефералка: https://t.me/%s?start=%d\nВаши рефералы: %d шт.", getMeResp.Result.UserName, fromId, len(usersByRef)))
+		userPersonalRef := srv.GetUserPersonalRef(fromId)
+		srv.SendMessageAndDb(fromId, fmt.Sprintf("Ваша рефералка: %s\nВаши рефералы: %d шт.", userPersonalRef, len(usersByRef)))
 		srv.Db.UpdateLatsActiontime(fromId)
 		srv.Db.UpdateFeedbackTime(fromId)
 		return nil

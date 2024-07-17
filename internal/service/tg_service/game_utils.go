@@ -396,3 +396,8 @@ func (srv *TgService) IsIgnoreUser(chatId int) bool {
 	}
 	return false
 }
+
+func (srv *TgService) GetUserPersonalRef(fromId int) string {
+	getMeResp, _ := srv.GetMe(srv.Cfg.Token)
+	return fmt.Sprintf("https://t.me/%s?start=%d", getMeResp.Result.UserName, fromId)
+}
