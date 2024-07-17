@@ -53,7 +53,16 @@ func (srv *TgService) HandleMessage(m models.Update) error {
 		
 		fullMess := fmt.Sprintf("%s\n\n%s", messText, mess)
 
-		srv.SendMessageAndDb(fromId, fullMess)
+		reply_markup := `{"inline_keyboard" : [
+			[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]
+		]}`
+		fileNameInServer := "./files/inst_story_draft.jpeg"
+		_, err := srv.SendDocumentWCaptionWRM(fromId, fullMess, fileNameInServer, reply_markup)
+		if err != nil {
+			return fmt.Errorf("HandleMessage SendDocumentWCaptionWRM err: %v", err)
+		}
+
+		// srv.SendMessageAndDb(fromId, fullMess)
 
 		srv.Db.UpdateLatsActiontime(fromId)
 		srv.Db.UpdateFeedbackTime(fromId)
