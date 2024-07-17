@@ -510,12 +510,12 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 
 	srv.Db.EditBotState(fromId, "")
 
-	text := "‎"
+	text := '‎'
 	reply_markup := `{
 		"keyboard" : [[{ "text": "Условия розыгрыша", "resize": true }, { "text": "Мои рефералы", "resize": true }]],
 		"resize_keyboard": true
 	}`
-	srv.SendMessageWRM(fromId, text, reply_markup)
+	srv.SendMessageWRM(fromId, string(text), reply_markup)
 
 	userPersonalRef := srv.GetUserPersonalRef(fromId)
 	// mess := fmt.Sprintf("Поздравляю, ты успешно выполнил все условия и выйграл 5.000 рублей 🎉💰\n\nНаш менеджер свяжется с тобой через этого бота в течение 12 часов ☑️")
@@ -532,7 +532,11 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 	reply_markup = `{"inline_keyboard" : [
 		[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]
 	]}`
-	srv.SendMessageWRM(fromId, mess, reply_markup)
+	fileNameInServer := "./files/inst_story_draft.jpeg"
+	_, err =srv.SendDocumentWCaptionWRM(fromId, mess, fileNameInServer, reply_markup)
+	if err != nil {
+		return fmt.Errorf("CQ_subscribe SendDocumentWCaptionWRM err: %v", err)
+	}
 	// messId := messResp.Result.MessageId
 	// srv.Db.EditNotDelMessId(fromId, messId)
 	srv.SendMsgToServer(fromId, "bot", mess)

@@ -597,6 +597,24 @@ func (srv *TgService) SendDocumentWCaption(chat_id int, caption, fileNameInServe
 	}
 	return resp, nil
 }
+func (srv *TgService) SendDocumentWCaptionWRM(chat_id int, caption, fileNameInServer, reply_markup string) (models.SendMediaResp, error) {
+	futureJson := map[string]string{
+		"chat_id":    strconv.Itoa(chat_id),
+		"caption":    caption,
+		"parse_mode": "HTML",
+		"photo":      fmt.Sprintf("@%s", fileNameInServer),
+		"reply_markup": reply_markup,
+	}
+	contentType, body, err := files.CreateForm(futureJson)
+	if err != nil {
+		return models.SendMediaResp{}, fmt.Errorf("SendDocumentWCaptionWRM CreateForm err: %v", err)
+	}
+	resp, err := srv.SendDocument(body, contentType)
+	if err != nil {
+		return models.SendMediaResp{}, fmt.Errorf("SendDocumentWCaptionWRM SendPhoto err: %v", err)
+	}
+	return resp, nil
+}
 
 func (srv *TgService) SendContact(chat_id int, phone_number, first_name string) (models.SendMessageResp, error) {
 	json_data, err := json.Marshal(map[string]any{
