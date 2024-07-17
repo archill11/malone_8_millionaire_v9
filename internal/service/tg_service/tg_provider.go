@@ -368,7 +368,27 @@ func (srv *TgService) SendAnimation(body io.Reader, contentType string) (models.
 		return models.SendMediaResp{}, fmt.Errorf("SendAnimation Decode err: %v", err)
 	}
 	if j.ErrorCode != 0 {
-		return j, fmt.Errorf("SendAnimation errResp: %+v", j.BotErrResp)
+		return j, fmt.Errorf("Animation errResp: %+v", j.BotErrResp)
+	}
+	return j, nil
+}
+
+func (srv *TgService) SendDocument(body io.Reader, contentType string) (models.SendMediaResp, error) {
+	resp, err := http.Post(
+		fmt.Sprintf(srv.Cfg.TgEndp, srv.Cfg.Token, "sendDocument"),
+		contentType,
+		body,
+	)
+	if err != nil {
+		return models.SendMediaResp{}, fmt.Errorf("SendDocument Post err: %v", err)
+	}
+	defer resp.Body.Close()
+	var j models.SendMediaResp
+	if err := json.NewDecoder(resp.Body).Decode(&j); err != nil {
+		return models.SendMediaResp{}, fmt.Errorf("SendDocument Decode err: %v", err)
+	}
+	if j.ErrorCode != 0 {
+		return j, fmt.Errorf("SendDocument errResp: %+v", j.BotErrResp)
 	}
 	return j, nil
 }
@@ -556,6 +576,24 @@ func (srv *TgService) SendPhotoWCaptionWRM(chat_id int, caption, fileNameInServe
 	resp, err := srv.SendPhoto(contentType, body)
 	if err != nil {
 		return models.SendMediaResp{}, fmt.Errorf("SendPhotoWCaptionWRM SendPhoto err: %v", err)
+	}
+	return resp, nil
+}
+
+func (srv *TgService) SendDocumentWCaption(chat_id int, caption, fileNameInServer string) (models.SendMediaResp, error) {
+	futureJson := map[string]string{
+		"chat_id":    strconv.Itoa(chat_id),
+		"caption":    caption,
+		"parse_mode": "HTML",
+		"photo":      fmt.Sprintf("@%s", fileNameInServer),
+	}
+	contentType, body, err := files.CreateForm(futureJson)
+	if err != nil {
+		return models.SendMediaResp{}, fmt.Errorf("SendDocumentWCaption CreateForm err: %v", err)
+	}
+	resp, err := srv.SendDocument(body, contentType)
+	if err != nil {
+		return models.SendMediaResp{}, fmt.Errorf("SendDocumentWCaption SendPhoto err: %v", err)
 	}
 	return resp, nil
 }
