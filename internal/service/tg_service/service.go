@@ -124,6 +124,7 @@ type (
 		ChatLinkToCheck string
 		ServerStatUrl   string
 		ServerUrl  string
+		ServerInstUrl  string
 	}
 
 	Lichki struct {

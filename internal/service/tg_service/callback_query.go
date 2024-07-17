@@ -256,6 +256,26 @@ func (srv *TgService) HandleCallbackQuery(m models.Update) error {
 		return err
 	}
 
+	if cq.Data == "priglasil_btn" {
+		err := srv.CQ_priglasil_btn(m)
+		if err != nil {
+			srv.SendMessageAndDb(fromId, ERR_MSG)
+			srv.SendMessageAndDb(fromId, err.Error())
+		}
+		srv.Db.UpdateLatsActiontime(fromId)
+		return err
+	}
+
+	if cq.Data == "otmetil_btn" {
+		err := srv.CQ_otmetil_btn(m)
+		if err != nil {
+			srv.SendMessageAndDb(fromId, ERR_MSG)
+			srv.SendMessageAndDb(fromId, err.Error())
+		}
+		srv.Db.UpdateLatsActiontime(fromId)
+		return err
+	}
+
 	srv.Db.UpdateLatsActiontime(fromId)
 	return nil
 }
@@ -718,6 +738,37 @@ func (srv *TgService) CQ_user_info_btn(m models.Update) error {
 	srv.l.Info(fmt.Sprintf("CQ_user_info_btn: fromId: %d, fromUsername: %s", fromId, fromUsername))
 
 	srv.SendForceReply(fromId, USER_INFO_MSG)
+
+	return nil
+}
+
+func (srv *TgService) CQ_otmetil_btn(m models.Update) error {
+	cq := m.CallbackQuery
+	fromId := cq.From.Id
+	fromUsername := cq.From.UserName
+	srv.l.Info(fmt.Sprintf("CQ_otmetil_btn: fromId: %d, fromUsername: %s", fromId, fromUsername))
+
+	mess := fmt.Sprintf("Отправь ссылку на историю или @юзернейм инстаграма, с которого выложил историю👇")
+
+	srv.SendMessageAndDb(fromId, mess)
+
+	// todo set state
+
+	return nil
+}
+
+
+func (srv *TgService) CQ_priglasil_btn(m models.Update) error {
+	cq := m.CallbackQuery
+	fromId := cq.From.Id
+	fromUsername := cq.From.UserName
+	srv.l.Info(fmt.Sprintf("CQ_priglasil_btn: fromId: %d, fromUsername: %s", fromId, fromUsername))
+
+	mess := fmt.Sprintf("Отправь ссылку на историю или @юзернейм инстаграма, с которого выложил историю👇")
+
+	srv.SendMessageAndDb(fromId, mess)
+
+	// todo set state
 
 	return nil
 }

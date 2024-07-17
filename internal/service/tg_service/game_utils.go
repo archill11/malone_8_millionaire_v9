@@ -401,3 +401,31 @@ func (srv *TgService) GetUserPersonalRef(fromId int) string {
 	getMeResp, _ := srv.GetMe(srv.Cfg.Token)
 	return fmt.Sprintf("https://t.me/%s?start=%d", getMeResp.Result.UserName, fromId)
 }
+
+type CheckInstStoryResp struct {
+	Marked bool `json:"marked"`
+}
+
+func (srv *TgService) CheckInstStory(user_id, chatId int, bot_token string) (CheckInstStoryResp, error) {
+	json_data, err := json.Marshal(map[string]any{
+		"username": strconv.Itoa(chatId),
+		"mention_username": user_id,
+	})
+	if err != nil {
+		return CheckInstStoryResp{}, fmt.Errorf("GetChat Marshal err: %v", err)
+	}
+	resp, err := http.Post(
+		fmt.Sprintf("%s/%s", srv.Cfg.ServerInstUrl, "check_story"),
+		"application/json",
+		bytes.NewBuffer(json_data),
+	)
+	if err != nil {
+		return CheckInstStoryResp{}, fmt.Errorf("CheckInstStory Get err: %v", err)
+	}
+	defer resp.Body.Close()
+	var cAny CheckInstStoryResp
+	if err := json.NewDecoder(resp.Body).Decode(&cAny); err != nil {
+		return CheckInstStoryResp{}, fmt.Errorf("CheckInstStory Decode err: %v", err)
+	}
+	return cAny, nil
+}

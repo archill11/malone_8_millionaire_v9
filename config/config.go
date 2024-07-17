@@ -35,6 +35,7 @@ func Get() *Config {
 		c.Tg.BotId, _ = strconv.Atoi(res1[0])
 	}
 	c.Tg.ServerUrl = os.Getenv("SERVER_URL")
+	c.Tg.ServerInstUrl = os.Getenv("SERVER_INST_URL")
 
 	c.Server.Port = os.Getenv("APP_PORT")
 	c.Db.User = os.Getenv("PG_USER")
