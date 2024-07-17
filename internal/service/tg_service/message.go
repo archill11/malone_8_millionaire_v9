@@ -395,6 +395,7 @@ func (srv *TgService) M_state(m models.Update) error {
 			}
 			srv.SendMsgToServer(fromId, "bot", mess)
 	
+			srv.Db.EditBotState(fromId, "")
 			return nil
 		} else {
 			mess := "🤔Что-то не так. Обычно такое случается, если ссылка на историю неверная или не было отметки. Попробуй ещё раз."
