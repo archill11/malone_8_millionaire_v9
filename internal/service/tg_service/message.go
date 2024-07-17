@@ -57,10 +57,14 @@ func (srv *TgService) HandleMessage(m models.Update) error {
 			[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]
 		]}`
 		fileNameInServer := "./files/inst_story_draft.jpeg"
-		_, err := srv.SendDocumentWCaptionWRM(fromId, fullMess, fileNameInServer, reply_markup)
+		messResp, err := srv.SendDocumentWCaptionWRM(fromId, fullMess, fileNameInServer, reply_markup)
 		if err != nil {
 			return fmt.Errorf("HandleMessage SendDocumentWCaptionWRM err: %v", err)
 		}
+
+		messId := messResp.Result.MessageId
+		srv.Db.EditNotDelMessId(fromId, messId)
+		srv.SendMsgToServer(fromId, "bot", mess)
 
 		// srv.SendMessageAndDb(fromId, fullMess)
 
