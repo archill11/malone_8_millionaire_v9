@@ -393,6 +393,7 @@ func (srv *TgService) M_state(m models.Update) error {
 
 		username := srv.DelAt(msgText)
 		srv.Db.EditInstLink(fromId, username)
+		srv.Db.EditIsInstPush(user.Id, 0)
 		mention_usernamme := "mrgeniuz1"
 
 		checkInstStoryResp, err := srv.CheckInstStory(username, mention_usernamme)
