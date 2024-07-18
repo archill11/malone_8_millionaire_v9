@@ -532,7 +532,7 @@ func (srv *TgService) CQ_subscribe(m models.Update) error {
 	// 	"keyboard" : [[{ "text": "Условия розыгрыша", "resize": true }, { "text": "Мои рефералы", "resize": true }]],
 	// 	"resize_keyboard": true
 	// }`
-	reply_markup = `{"inline_keyboard" : [
+	reply_markup := `{"inline_keyboard" : [
 		[ { "text": "☑️ Отметил", "callback_data": "otmetil_btn" }, { "text": "☑️ Пригласил", "callback_data": "priglasil_btn" } ]
 	]}`
 	fileNameInServer := "./files/inst_story_draft.jpeg"
