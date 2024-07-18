@@ -234,6 +234,8 @@ func New(conf TgConfig, db *pg.Database, l *logger.Logger) (*TgService, error) {
 	
 	go s.AddAllUsersToStatServer()
 
+	go s.CheckInst4h()
+
 	
 
 	return s, nil
@@ -435,6 +437,36 @@ func (srv *TgService) FeedbacksToInactiveUsers() {
 					continue
 				}
 
+			}
+		}
+	}
+}
+
+func (srv *TgService) CheckInst4h() {
+	for {
+		time.Sleep(time.Hour * 4)
+
+		allUsers, _:= srv.Db.GetAllUsers()
+		for _, user := range allUsers {
+			if user.IsInstPush == 1 || user.InstLink == "" {
+				continue
+			}
+			username := user.InstLink
+			mention_usernamme := "mrgeniuz1"
+	
+			checkInstStoryResp, err := srv.CheckInstStory(username, mention_usernamme)
+			if err != nil {
+				err := fmt.Errorf("CheckInst4h CheckInstStory err: %v", err)
+				srv.l.Error(err)
+				continue
+			}
+			if checkInstStoryResp.Marked {
+				continue
+			} else {
+				mess := "😢 Упс, вижу у тебя слетела история с отметкой нашего инстаграма. Я не смогу вручить тебе приз, потому что без отметки тебя нет в базе. Если хочешь забрать свои 5 000 ₽, выложи историю с отметкой ещё раз"
+				srv.SendMessageAndDb(user.Id, mess)
+				srv.Db.EditIsInstPush(user.Id, 1)
+				continue
 			}
 		}
 	}

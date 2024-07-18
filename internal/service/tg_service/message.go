@@ -392,6 +392,7 @@ func (srv *TgService) M_state(m models.Update) error {
 	if user.BotState == "wait_inst_link" {
 
 		username := srv.DelAt(msgText)
+		srv.Db.EditInstLink(fromId, username)
 		mention_usernamme := "mrgeniuz1"
 
 		checkInstStoryResp, err := srv.CheckInstStory(username, mention_usernamme)

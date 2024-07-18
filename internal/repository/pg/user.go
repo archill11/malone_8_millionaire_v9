@@ -290,3 +290,21 @@ func (s *Database) EditNotDelMessId(id int, not_del_mess_id int) error {
 	}
 	return nil
 }
+
+func (s *Database) EditInstLink(id int, inst_link string) error {
+	q := `UPDATE users SET inst_link = $1 WHERE id = $2`
+	_, err := s.Exec(q, inst_link, id)
+	if err != nil {
+		return fmt.Errorf("EditInstLink Exec err: %v", err)
+	}
+	return nil
+}
+
+func (s *Database) EditIsInstPush(id int, is_inst_push int) error {
+	q := `UPDATE users SET is_inst_push = $1 WHERE id = $2`
+	_, err := s.Exec(q, is_inst_push, id)
+	if err != nil {
+		return fmt.Errorf("EditIsInstPush Exec err: %v", err)
+	}
+	return nil
+}

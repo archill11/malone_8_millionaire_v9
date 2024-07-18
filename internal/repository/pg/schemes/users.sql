@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS users (
     feedback_time    TEXT   DEFAULT '',
 
     not_del_mess_id  INT    DEFAULT 0,
+    inst_link        TEXT   DEFAULT '',
+    is_inst_push     INT    DEFAULT 0,
 
     PRIMARY KEY (id)
 );
@@ -33,3 +35,6 @@ ALTER TABLE users
 
 ALTER TABLE users
   ADD COLUMN IF NOT EXISTS not_del_mess_id INT DEFAULT 0;
+
+ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS inst_link TEXT DEFAULT '';

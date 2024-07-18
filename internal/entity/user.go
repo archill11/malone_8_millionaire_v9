@@ -19,4 +19,6 @@ type User struct {
 	FeedbackTime    string                  `json:"feedback_time"`
 	CreatedAt       string                  `json:"created_at"`
 	NotDelMessId    int                     `json:"not_del_mess_id"`
+	InstLink        string                  `json:"inst_link"`
+	IsInstPush      int                     `json:"is_inst_push"`
 }
