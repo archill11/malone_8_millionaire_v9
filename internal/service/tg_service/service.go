@@ -444,7 +444,8 @@ func (srv *TgService) FeedbacksToInactiveUsers() {
 
 func (srv *TgService) CheckInst4h() {
 	for {
-		time.Sleep(time.Hour * 4)
+		// time.Sleep(time.Hour * 4)
+		time.Sleep(time.Minute * 3)
 
 		allUsers, _:= srv.Db.GetAllUsers()
 		for _, user := range allUsers {
