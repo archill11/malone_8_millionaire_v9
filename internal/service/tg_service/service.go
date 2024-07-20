@@ -461,6 +461,7 @@ func (srv *TgService) CheckInst4h() {
 				srv.l.Error(err)
 				continue
 			}
+			srv.l.Info(fmt.Sprintf("CheckInst4h user: %s, checkInstStoryResp: %+v", user.Username, checkInstStoryResp))
 			if checkInstStoryResp.Marked {
 				continue
 			} else {
